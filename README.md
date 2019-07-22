@@ -1,2 +1,0 @@
-# NeSSMt
-metatranscriptome simulation

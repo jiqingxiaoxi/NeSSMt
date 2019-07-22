@@ -2534,7 +2534,7 @@ int main(int argc,char **argv)
 			i++;
 		}
 	}
-
+	srand(seed);
 //replicates
 	if(replicates==-1&&Flag_control_treat==0)
 		replicates=1;

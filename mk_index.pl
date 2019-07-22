@@ -23,33 +23,33 @@ my $help="Usage:
 
 Arguments:
   --transcript|-t <string>
-    the transcript files, or the dirctories containing the transcripts files.
-    files or dirctorys are separated by comma.
-    if input the dictories of transcript files, those can't be same with the dictories of genome or rRNA files(below).
-    transcript files must be with the .fa, .fasta or .fas suffix.
+    the transcript files, or the directories containing the transcripts files.
+    files or directories are separated by comma.
+    if input the directories of transcript files, neither genome nor rRNA gene files are allowed in those directories.
+    transcript files must be suffixed with ".fa", ".fasta" or ".fas".
   --genome|-g <string>
-    the genome files, or the dirctories containing the genome files.
-    files or dirctorys are separated by comma.
-    if input the dictories of genome files, those can't be same with the dictories of transcript(above) or rRNA files(below).
-    genome files must be with the .fa, .fasta or .fas suffix.
-    it must be with --annotation|-a argument(below).
+    the genome files, or the directories containing the genome files.
+    files or directories are separated by comma.
+    if input the directories of genome files, neither transcript nor rRNA gene files are allowed in those directories.
+    genome files must be suffixed with ".fa", ".fasta" or ".fas".
+    it must be used with --annotation|-a argument(below).
   --annotation|-a <string>
-    the annotation files, or the dirctories containing the annotation files.
-    files or dirctorys are separated by comma.
-    annotation files must be with the .genbank, .gb, .gbff or .gff3 suffix.
-    it must be with --genome|-g argument(above).
+    the annotation files, or the directories containing the annotation files.
+    files or directories are separated by comma.
+    annotation files must be suffixed with ".genbank", ".gb", ".gbff" or ".gff3".
+    it must be used with --genome|-g argument(above).
   --rRNA|-r <string>
-    the rRNA files, or the dirctories containing the rRNA files.
-    files or dirctorys are separated by comma.
-    if input the dictories of rRNA files, those can't be same with the dictories of genome or transcript files(below).
-    rRNA files must be with the .fa, .fasta or .fas suffix.
+    the rRNA gene files, or the directories containing the rRNA gene files.
+    files or directories are separated by comma.
+    if input the directories of rRNA gene files, neither transcript nor genome files are allowed in those directories.
+    rRNA gene files must be suffixed with ".fa", ".fasta" or ".fas".
   --output|-o <string>
-    the output file
+    the output file.
   --min <int>
-    the min length of transcript or rRNA sequence used to simulate reads
-    default: 300
+    the min length of transcript or rRNA gene sequence used to simulate reads.
+    default: 300.
   --help|-h
-    print help information\n";
+    print help information.\n";
 
 $check=GetOptions("genome|g=s"=>\$genome_list,"annotation|a=s"=>\$annotation_list,"transcript|t=s"=>\$transcript_list,"rRNA|r=s"=>\$rRNA_list,"output|o=s"=>\$output,"help|h"=>\$flag,"min=i"=>\$min);
 if($check==0||$flag)

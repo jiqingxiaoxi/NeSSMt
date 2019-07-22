@@ -1,0 +1,208 @@
+NeSSMt is a metatranscriptome simulator: Next generation Sequencing Simulator for Metatranscriptome.
+######
+Introduction:
+  NeSSMt is the first metatranscriptome simulator. Using a composition table and reference transcripts or genomes (with annotation file), it can:
+	1) simulate reads from rRNA genes, not only from mRNA transcripts
+	2) simulate the abundance change in composition between different experiments
+	3) simulate the differential expression genes
+	4) simulate biological replicates 
+	5) simulate sequencing errors.
+
+######
+SYSTEM REQUIREMENTS:
+NeSSMt now runs under Linux operation system, it needs perl, gcc and the GSL library. The GSL library can be downloaded from https://www.gnu.org/software/gsl/.
+
+######
+Files and Directories:
+This system is packaged in one file, "NeSSMt.tar.gz", which can be downloaded from http://cgm.sjtu.edu.cn/NeSSMt/ and https://github.com/jiqingxiaoxi/NeSSMt.git. Important files inside this tar.gz file are listed here. 
+
+|-mk_index.pl		Construct the index file for reference genomes, transcripts, rRNA genes or/and annotation files.
+|-NeSSMt.c		The program of NeSSMt.
+|-simulation.config	The configure file for simulating sequencing errors.
+|-Makefile		Makefile for NeSSMt program.
+|-example/
+  Abundance.table	A simplified composition information table for coral community. This table contains five organisms.
+  Gene.list		The expressed genes list and their relative expression level.
+  Genome/		Under this directory there are three reference genome files: Escherichia coli, Lactobacillus paracasei and Caviid herpesvirus 2.
+  Transcript/		Under this directory there are two reference transcripts files from coral and symbiodinium.
+  rRNA/			Under this directory there is a fasta files containing two rRNA gene sequences from coral.
+  Annotation/		Under this directory there are three annotation files for Escherichia coli, Lactobacillus paracasei and Caviid herpesvirus 2.
+
+######
+INSTALL GSL library:
+  download GSL library from https://www.gnu.org/software/gsl/
+  unzip downloaded gsl library
+  cd gsl
+  ./configure
+  make
+  make install (need root privileges)
+ 
+INSTALL NeSSMt:
+  tar -zxvf NeSSMt.tar.gz
+  cd NeSSMt/
+  make
+
+######
+QUICK START:
+First of all: construct the index file:
+  cd NeSSMt/
+  perl mk_index.pl -t example/Transcript/ -g example/Genome/ -a example/Annotation/ -r example/rRNA/ -o index
+    (One file "index" are created.)
+
+1. If you only want to simulate a metatranscriptome dataset without biological replicates and differential expression:
+  cd NeSSMt/
+  ./NeSSMt -index index -abundance example/Abundance.table -o Test
+    (Three files "Test_1.fq", "Test_2.fq" and "Test-info.txt" are created.)
+
+2. If you want to simulate three replicated metatranscriptome datasets without differentail expression:
+  cd NeSSMt/
+  ./NeSSMt -index index -abundance example/Abundance.table -replicate 3 -o Test
+    (Seven files "Test1_1.fq", "Test1_2.fq", "Test2_1.fq", "Test2_2.fq", "Test3_1.fq", "Test3_2.fq" and "Test-info.txt" are created.)
+
+3. If you want to simulate metatranscriptome datasets with differential expression:
+  cd NeSSMt/
+  ./NeSSMt -index index -abundance example/Abundance.table -diff -o Test
+    (Thirteen files "Test-Treat1_1.fq", "Test-Treat1_2.fq", "Test-Treat2_1.fq", "Test-Treat2_2.fq", "Test-Treat3_1.fq", "Test-Treat3_2.fq", "Test-Control1_1.fq", "Test-Control1_2.fq", "Test-Control2_1.fq", "Test-Control2_2.fq", "Test-Control3_1.fq", "Test-Control3_2.fq" and "Test-info.txt" are created.)
+
+4. If you want to simulate metatranscriptome dataset using specified expression genes:
+   cd NeSSMt/
+   ./NeSSMt -index index -abundance example/Abundance.table -gene example/Gene.list -o Test
+    (Three files "Test_1.fq", "Test_2.fq" and "Test-info.txt" are created.)
+
+######
+RUN THE SYSTEM:
+1.Construct the index file. This file contains the path of reference genomes, annotations and so on, and the number of mRNA, rRNA in reference genomes.
+Command:
+  perl mk_index.pl --transcript|-t <transcript>  -output|-o <output_file> [options]*
+
+Arguments:
+  --transcript|-t <string>
+    the transcript files, or the directories containing the transcripts files.
+    files or directories are separated by comma.
+    if input the directories of transcript files, neither genome nor rRNA gene files are allowed in those directories.
+    transcript files must be suffixed with ".fa", ".fasta" or ".fas".
+  --genome|-g <string>
+    the genome files, or the directories containing the genome files.
+    files or directories are separated by comma.
+    if input the directories of genome files, neither transcript nor rRNA gene files are allowed in those directories.
+    genome files must be suffixed with ".fa", ".fasta" or ".fas".
+    it must be used with --annotation|-a argument(below).
+  --annotation|-a <string>
+    the annotation files, or the directories containing the annotation files.
+    files or directories are separated by comma.
+    annotation files must be suffixed with ".genbank", ".gb", ".gbff" or ".gff3".
+    it must be used with --genome|-g argument(above).
+  --rRNA|-r <string>
+    the rRNA gene files, or the directories containing the rRNA gene files.
+    files or directories are separated by comma.
+    if input the directories of rRNA gene files, neither transcript nor genome files are allowed in those directories.
+    rRNA gene files must be suffixed with ".fa", ".fasta" or ".fas".
+  --output|-o <string>
+    the output file.
+  --min <int>
+    the min length of transcript or rRNA gene sequence used to simulate reads.
+    default: 300.
+  --help|-h
+    print help information.
+
+Highly recommended: use the absolute path for input files or directory!!!
+
+2.Simulate metatranscriptome datasets.
+Command:
+  ./NeSSMt -abundance abundance_file -index index_file -o prefix_output [options]
+
+[Necessary parameter]:
+-abundance <abundance_file>     [char]this file contains the organisms' name and their abundance.
+-index <index_file>             [char]the index file contains the information of reference genomes, transcripts and so on, it is generated by mk_index.pl script.
+-o <output_file>                [char]name of output file.
+
+[Optional parameter]:
+-r <reads_number>               [int]total number of simulated reads, default 10000.
+-single                         simulate single reads. By default NeSSMt simulates paired reads.
+-l <read_length>                [int]length of the reads, default 150bp.
+-fragment <fragment_length>     [int]length of fragment in paired-end sequencing, default 350bp.
+-sd <standard deviation>        [int]standard deviation of fragment length, default 20.
+-config <config_file>           [char]the configure file for sequencing errors, default is the "simulation.config" file.
+-seed <seed>                    [int]the seed used in random function, default 0.
+-strandspecific                 simulate strand-specific RNA-seq sequencing, default is unstrand-specific.
+-express <express_per>          [float]the percentage of expressed gene in all genes for each organism, default 0.1.
+-gene <gene_file>               [char]this file contains the list of expressed genes and their relative abundance.
+-rRNA <percentage>              [float]the percentage of reads from rRNA genes in all simulated reads, default 0.1.
+
+[Simulate differential expression]:
+-diff				simulate differential expression.
+-up <up_expression_per>         [float]the percentage of up regulated genes in all expressed genes for each organism, default 0.1.
+-down <down_expression_per>     [float]the percentage of down regulated genes in all expressed genes for each organism, default 0.1.
+-maxFC <max_fold change>        [float]the max fold change in differential expression(>1), default 20.
+-minFC <min_fold change>        [float]the min fold change in differential expression(>1), default 2.
+-more <more_abundance_per>      [float]the percentage of organisms whose relative abundance are more in control group than in treat group, default 0.2.
+-less <down_abundance_per>      [float]the percentage of organisms whose relative abundance are less in control group than in treat group, default 0.2.
+-maxAd <max_abundance_change>   [float]the max fold change in relative abundance(>1), default 10.
+-minAd <min_abundance_change>   [float]the min fold change in relative abundance(>1), default 2.
+
+[Simulate biological replicates]:
+-replicate <replicates>         [int]the number of biological replicates. By default, replicates are 3 in differential expression simulation and replicates is 1 for other simulation.
+-prob <probability>             [float]the probability is used to simulate expression counts in biological replicates, the bigger of probability, the more dispersion of counts, default 0.33333.
+
+######
+FILE FORMAT:
+1) Sequence file:
+  The input sequence files of genome, transcript and rRNA must be in fasta format.
+2) Annotation file:
+  The annotation files must be in GenBank or GFF3 format.
+3) The index file generated by mk_index.pl script:
+  In this file, each line represents one organism, it has 5-8 columns separated by tab.
+   Column 1: the name of organism
+   Column 2: the max length of sequences
+   Column 3: the number of mRNA in this organism
+   Column 4: the number of rRNA genes in this organism
+   Column 5-8: the paths of reference genome, transcript, rRNA gene and annotation files. "T" means transcript, "R" means rRNA gene, "G" means genome, "GB" means GenBank formatted annotation file, "GF" means GFF3 formatted annotation file.
+  For example:
+  "coral	27997	40030	2	T:examplt/Transcript/coral.fa	R:example/rRNA/coral.fa
+   E.coli:Escherichia coli str. K-12 substr. MG1655	4641652	3774	14	G:example/Genome/E.coli.fasta	GF:example/Annotation/E.coli.gff3"
+4) The inputted abundance file:
+  This file contains the name of organism in simulated community and their relative abundance. Each line represents one organism, it has 2 or 3 columns separated by tab:
+   Column 1: the name of organism
+   Column 2: the relative abundance
+   Column 3: the relative abundance only used in simulating differential expression
+  In this abundance table, each organism can have configure information to define how many expressed genes, differential expression genes and so on. Those information are put in square brackets "[]":
+   [Num_Expression=XX]: how many genes are expressed in this organism (XX>=1) or how much percentage genes are expressed in this organism (XX<1).
+   [Num_Up_DE=XX]: how many genes are up regulation in this organism (XX>=1) or how much percentage of up regulation genes is in expressed genes (XX<1).
+   [Num_Down_DE=XX]: how many genes are down regulation in this organism (XX>=1) or how much percentage of down regulation genes is in expressed genes (XX<1).
+   [Max_FC=XX]: the max fold change (>0).
+   [Min_FC=XX]: the min fold change (>0).
+ Every organism can have any number of those configure information. The configure information can effect all organisms under it and the lost configure information of organism is settled by inputted parameters "-express", "-maxFC" and so on.
+ For example:
+ "coral	45	60
+  [Num_Expression=300]
+  [Max_FC=20.5]
+  symbiodinium	30	25
+  [Num_Up_DE=12]
+  E.coli	12	8"
+ In above abundance table there are 3 organisms. The configure information of coral is only from inputted parameters, part of configure information of symbiodinium and E.coli is from this abundance table.
+5) The inputted expressed gene list file:
+  In this file users can define which genes are expressed and whether they are differential expreesions. If the simulated organisms are not in this file, their expressed genes are selected randomly by NeSSMt.
+  Each organism in this file begins with its name in square brackets "[]", then each line below represents a gene. The line of gene is 2 or 3 columns separated by tab:
+   Column 1: the gene name
+   Column 2: the relative expression level
+   Column 3: the fold change only used in simulating differential expression. If the value larger than 1, this gene is up regulation; if the value less than -1, this gene is down regulation; if this value is 1 or lost, the gene is not a differential expressed gene.
+ For example:
+ "[coral]
+  XM_015891617.1	10	4.5
+  XM_015891622.1	4	-3
+  XM_015891624.1	7	1
+  [E.coli]
+  satP	10	-2.6
+  nhaA	4
+  ispH	7	1
+  carB	5	4.3"
+ This file define expressed genes for two organisms: coral and E.coli.
+6) The outputted simulated reads file:
+  The outputted reads files are in fastq format.
+7) The outputted information file:
+  Apart from the fastq files, NeSSMt also outputs a information file suffixed by "-info.txt". This file contains the information of genes: the source organism of the gene, the gene name, the fold change (if simulate differential expression) and simulated reads number for this gene.
+
+######
+If you have any questions, please contact with us:
+Ben Jia: chenmodexiaoxi@126.com
+Chaochun Wei: ccwei@sjtu.edu.cn

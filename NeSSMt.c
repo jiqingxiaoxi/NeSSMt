@@ -1136,10 +1136,9 @@ struct GenePos *ReadGff(char *file, int min)
 int GetGenomeSequence(FILE *fp,char *Genome,char *Genome_name)
 {
 	char read[300];
-	int flag,success,length;
+	int flag,length;
 	
 	flag=0;
-	success=0;
 	memset(read,'\0',300*sizeof(char));
 	length=strlen(Genome_name);
 	while(fgets(read,300*sizeof(char),fp)!=NULL)

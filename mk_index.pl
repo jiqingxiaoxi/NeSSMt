@@ -26,23 +26,23 @@ Arguments:
     the transcript files, or the directories containing the transcripts files.
     files or directories are separated by comma.
     if input the directories of transcript files, neither genome nor rRNA gene files are allowed in those directories.
-    transcript files must be suffixed with ".fa", ".fasta" or ".fas".
+    transcript files must be suffixed with \".fa\", \".fasta\" or \".fas\".
   --genome|-g <string>
     the genome files, or the directories containing the genome files.
     files or directories are separated by comma.
     if input the directories of genome files, neither transcript nor rRNA gene files are allowed in those directories.
-    genome files must be suffixed with ".fa", ".fasta" or ".fas".
+    genome files must be suffixed with \".fa\", \".fasta\" or \".fas\".
     it must be used with --annotation|-a argument(below).
   --annotation|-a <string>
     the annotation files, or the directories containing the annotation files.
     files or directories are separated by comma.
-    annotation files must be suffixed with ".genbank", ".gb", ".gbff" or ".gff3".
+    annotation files must be suffixed with \".genbank\", \".gb\", \".gbff\" or \".gff3\".
     it must be used with --genome|-g argument(above).
   --rRNA|-r <string>
     the rRNA gene files, or the directories containing the rRNA gene files.
     files or directories are separated by comma.
     if input the directories of rRNA gene files, neither transcript nor genome files are allowed in those directories.
-    rRNA gene files must be suffixed with ".fa", ".fasta" or ".fas".
+    rRNA gene files must be suffixed with \".fa\", \".fasta\" or \".fas\".
   --output|-o <string>
     the output file.
   --min <int>

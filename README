@@ -31,12 +31,13 @@ This system is packaged in one file, "NeSSMt.tar.gz", which can be downloaded fr
 ######
 INSTALL GSL library:
   download GSL library from https://www.gnu.org/software/gsl/
-  unzip downloaded gsl library
+  decompress downloaded gsl library
   cd gsl
   ./configure
   make
   make install (need root privileges)
- 
+ export LD_LIBRARY_PATH=/usr/local/lib (this command can be added into .bash_profile file)
+
 INSTALL NeSSMt:
   tar -zxvf NeSSMt.tar.gz
   cd NeSSMt/
@@ -49,6 +50,7 @@ First of all: construct the index file:
   perl mk_index.pl -t example/Transcript/ -g example/Genome/ -a example/Annotation/ -r example/rRNA/ -o index
     (One file "index" are created.)
 
+(If the error "error while loading shared libraries: libgsl.so.XX...." occurs when run NeSSMt, please run the command "export LD_LIBRARY_PATH=/usr/local/lib").
 1. If you only want to simulate a metatranscriptome dataset without biological replicates and differential expression:
   cd NeSSMt/
   ./NeSSMt -index index -abundance example/Abundance.table -o Test

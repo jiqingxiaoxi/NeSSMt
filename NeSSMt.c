@@ -1354,6 +1354,25 @@ struct DNASequences *ReadFastaFile(char *file,int min)
 					k++;
 			}
 			readIn[j]='\0';
+		//gi|XXX|ref|XXX| format
+                        if(memcmp(&readIn[i+1],"gi|",3)==0)
+                        {
+                                while(i<j-3)        
+                                {        
+                                        if(memcmp(&readIn[i],"ref|",4)!=0)
+                                        {
+                                                i++;
+                                                continue;
+                                        }
+                                        break;  
+                                }              
+                                if(memcmp(&readIn[i],"ref|",4)==0)
+                                {        
+                                        i=i+3;
+                                        if(readIn[j-1]=='|')
+                                                readIn[j-1]='\0';
+                                }
+                        }
 			new=(struct DNASequences *)malloc(sizeof(struct DNASequences));
 			new->Name=(char *)malloc((j-i)*sizeof(char));
 			memset(new->Name,'\0',(j-i)*sizeof(char));
